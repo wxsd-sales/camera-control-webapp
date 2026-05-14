@@ -1,0 +1,11 @@
+{
+  "name": "camera-control-webapp",
+  "version": "1.0.0",
+  "description": "This is an example web app which demonstrates how to pair with and control a Cisco Collaboration Devices Camera.",
+  "main": "script.js",
+  "scripts": {
+    "test": "node --check script.js"
+  },
+  "author": "William Mills",
+  "license": "MIT"
+}

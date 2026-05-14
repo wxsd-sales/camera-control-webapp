@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      crossorigin
+      src="https://unpkg.com/webex@3.7.0/umd/webex.min.js"
+    ></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@momentum-design/icons@0.54.0/dist/data/MomentumFontIcons.css">
+    <title>Cisco USB-C Camera Control</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-banner">
+      <div>
+        <h1 id="pageTitle">Cisco USB-C Camera Control</h1>
+      </div>
+      <button id="signOutBtn" type="button" class="secondary-button" hidden>
+        Sign out
+      </button>
+    </header>
+
+    <main class="app-shell" aria-labelledby="pageTitle">
+      <section class="modal-shell" aria-live="polite">
+        <details class="status-panel">
+          <summary>Pairing Status</summary>
+          <div id="alert" class="alert alert-info">
+            Sign in with Webex to begin.
+          </div>
+          <dl class="status-list" aria-label="Pairing status">
+            <div>
+              <dt>Webex SDK</dt>
+              <dd id="webexState" class="state-badge state-idle">Waiting</dd>
+            </div>
+            <div>
+              <dt>USB device</dt>
+              <dd id="usbState" class="state-badge state-idle">Waiting</dd>
+            </div>
+            <div>
+              <dt>HID permission</dt>
+              <dd id="permissionState" class="state-badge state-needed">Needed</dd>
+            </div>
+            <div>
+              <dt>USB-C token</dt>
+              <dd id="tokenState" class="state-badge state-idle">Waiting</dd>
+            </div>
+            <div>
+              <dt>Lyra pairing</dt>
+              <dd id="pairingState" class="state-badge state-idle">Waiting</dd>
+            </div>
+            <div>
+              <dt>Datachannel</dt>
+              <dd id="dataChannelState" class="state-badge state-idle">Waiting</dd>
+            </div>
+          </dl>
+        </details>
+
+        <section class="step-card" data-step="signin">
+          <p class="step-kicker">Step 1 of 5</p>
+          <h2>Sign in with Webex</h2>
+          <p>
+            Use your Webex account to register this browser, join the proximity pairing space,
+            and open the device datachannel.
+          </p>
+          <div class="step-actions">
+            <button id="signInBtn" type="button">Sign in with Webex</button>
+          </div>
+        </section>
+
+        <section class="step-card" data-step="webexLoading" hidden>
+          <p class="step-kicker">Step 2 of 5</p>
+          <h2>Preparing Webex</h2>
+          <p>
+            The Webex SDK is loading, registering this browser, and preparing the messaging
+            connection needed for USB-C pairing.
+          </p>
+          <div class="loader" aria-hidden="true"></div>
+        </section>
+
+        <section class="step-card" data-step="usbConnect" hidden>
+          <p class="step-kicker">Step 3 of 5</p>
+          <h2>Connect the USB-C device</h2>
+          <p>
+            Plug this computer into the USB-C port of the Cisco collaboration device you want
+            to control.
+          </p>
+          <ol id="connectGuide" class="guide-list">
+            <li>Connect the Cisco collaboration device to this computer with USB-C.</li>
+            <li>Wait for the operating system to finish detecting the USB HID device.</li>
+            <li>Continue when the cable is connected.</li>
+          </ol>
+          <div class="step-actions">
+            <button id="confirmUsbBtn" type="button">Device is Connected</button>
+          </div>
+        </section>
+
+        <section class="step-card" data-step="usbPermission" hidden>
+          <p class="step-kicker">Step 4 of 5</p>
+          <h2>Grant browser permission</h2>
+          <p>
+            Allow this web app to access the Cisco USB HID device so it can request the
+            USB-C proximity token.
+          </p>
+          <div class="device-summary">
+            <span id="deviceName">No Cisco USB HID device selected</span>
+            <small id="deviceDetail">
+              Connect the device with USB-C, then grant browser access.
+            </small>
+          </div>
+          <div class="step-actions">
+            <button id="grantHidBtn" type="button">Grant USB HID Access</button>
+          </div>
+        </section>
+
+        <section class="step-card" data-step="pairing" hidden>
+          <p class="step-kicker">Step 5 of 5</p>
+          <h2>Pairing with device</h2>
+          <p>Requesting pairing token.</p>
+          <div class="device-summary device-summary-inline">
+            <span id="pairingDeviceName">Cisco USB HID device ready</span>
+            <small id="pairingDeviceDetail">Waiting for pairing.</small>
+          </div>
+          <div class="loader" aria-hidden="true"></div>
+        </section>
+
+        <section class="step-card control-step" data-step="control" hidden>
+          <div class="control-heading">
+            <div>
+              <p class="step-kicker">Ready</p>
+              <h2>Camera controls</h2>
+            </div>
+            <button id="refreshCamerasBtn" type="button" disabled>Refresh</button>
+          </div>
+
+          <section class="control-section" aria-label="Available cameras">
+            <h3>Available Cameras</h3>
+            <ul id="cameraInventory" class="camera-list">
+              <li class="camera-empty">No camera status received yet.</li>
+            </ul>
+          </section>
+
+          <section class="control-section" aria-label="Saved camera presets">
+            <h3>Saved Presets</h3>
+            <div id="presetControls" class="control-grid">
+              <p class="control-empty">No saved presets received yet.</p>
+            </div>
+          </section>
+
+          <section class="control-section" aria-label="Camera modes">
+            <h3>Modes</h3>
+            <div id="cameraModeControls" class="control-grid">
+              <p class="control-empty">No camera modes received yet.</p>
+            </div>
+          </section>
+
+          <section
+            id="manualCameraControls"
+            class="control-section manual-control-section"
+            aria-label="Manual camera controls"
+            hidden
+          >
+            <h3>Manual Controls</h3>
+            <div class="manual-control-surface">
+              <div class="manual-control-row">
+                <div class="direction-pad" aria-label="Pan and tilt">
+                  <button
+                    type="button"
+                    class="pad-button pad-up"
+                    aria-label="Tilt up"
+                    data-ramp-axis="Tilt"
+                    data-ramp-direction="Up"
+                  >
+                    <span class="icon icon-arrow-up-bold" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="pad-button pad-left"
+                    aria-label="Pan left"
+                    data-ramp-axis="Pan"
+                    data-ramp-direction="Left"
+                  >
+                    <span class="icon icon-arrow-left-bold" aria-hidden="true"></span>
+                  </button>
+                  <span class="pad-center" aria-hidden="true"></span>
+                  <button
+                    type="button"
+                    class="pad-button pad-right"
+                    aria-label="Pan right"
+                    data-ramp-axis="Pan"
+                    data-ramp-direction="Right"
+                  >
+                    <span class="icon icon-arrow-right-bold" aria-hidden="true"></span>
+                  </button>
+                  <button
+                    type="button"
+                    class="pad-button pad-down"
+                    aria-label="Tilt down"
+                    data-ramp-axis="Tilt"
+                    data-ramp-direction="Down"
+                  >
+                    <span class="icon icon-arrow-down-bold" aria-hidden="true"></span>
+                  </button>
+                </div>
+
+                <div class="zoom-control" aria-label="Zoom">
+                  <button
+                    type="button"
+                    aria-label="Zoom in"
+                    data-ramp-axis="Zoom"
+                    data-ramp-direction="In"
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Zoom out"
+                    data-ramp-axis="Zoom"
+                    data-ramp-direction="Out"
+                  >
+                    −
+                  </button>
+                </div>
+              </div>
+
+              <button id="saveCameraViewBtn" type="button" class="save-camera-button">
+                Save camera view
+              </button>
+              <div id="savePresetControls" class="save-preset-grid" hidden></div>
+            </div>
+          </section>
+        </section>
+
+        <details class="log-panel">
+          <summary>Event Log</summary>
+          <ul id="eventLog" class="event-log"></ul>
+        </details>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

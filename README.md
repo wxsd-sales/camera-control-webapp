@@ -1,70 +1,48 @@
 # Camera Control Web App
 
-This is an example web app which demonstrates how to pair with and control a Cisco Collaboration Devices Camera.
-
-
+This static web app pairs a browser with a Cisco collaboration device over USB-C and controls the device camera through the Webex datachannel.
 
 ## Overview
 
-Go into detail about the implementation.   3-4 Sentences
-**HOW** the implementation works. You need not give end-to-end details but an overview.
+The app signs in with Webex, registers the browser as a Webex device, and requests the USB-C proximity token from the Cisco HID relay interface. The token is used to join the proximity Lyra space and connect the Webex LLM datachannel. Camera status, product platform, mode changes, pan/tilt/zoom, and preset commands are sent over that datachannel; USB HID is only used to request and renew the pairing token.
 
+## Prerequisites
 
+- Chrome or Edge with WebHID support.
+- A Cisco collaboration device connected to the computer over USB-C.
+- A Webex OAuth integration whose redirect URI matches the deployed page URL.
+- Network access to Webex services and the Webex JavaScript SDK CDN.
 
-### Flow Diagram
+## Run Locally
 
-<!-- *MANDATORY*  Insert Your Flow Diagram Here (if small PoC, alternative option is to include break down how it works here instead of diagram) -->
-![image/gif](insert img link here)
+Serve the app from `http://` or `https://`; Webex sign-in and WebHID do not work from a raw `file://` page.
 
+```sh
+python3 -m http.server 5501
+```
 
+Then open `http://127.0.0.1:5501/` and sign in with Webex.
 
-## Setup
+## Live Demo
 
-### Prerequisites & Dependencies: 
+A live GitHub Pages demo is available at [https://wxsd-sales.github.io/camera-control-webapp/](https://wxsd-sales.github.io/camera-control-webapp/).
 
-- Is this dependant on having another repo
-- Insert pre-requisites in bullets
-- Insert pre-requisite here  Also state any assumptions that you may have made about the user.
-- Limit nested bullets
+## Test
 
+```sh
+npm test
+```
 
-<!-- GETTING STARTED -->
-
-### Installation Steps:
-1.  Include step one here
-    ```sh
-    insert line of code here if applicable
-    ```
-2.  Insert step two here
-    Insert screenshot, if applicable
-    
-    
-    
-## Demo
-
-<!-- Insert link to the website below (if deployed). -->
-Check out our live demo, available [here](<insert link>)!
-
-<!-- Keep the following statement -->
-*For more demos & PoCs like this, check out our [Webex Labs site](https://collabtoolbox.cisco.com/webex-labs).
-
-
-<!-- Update your vidcast title, video screenshot, vidcast/youtube link & name -->
-[![Your Video Title ](assets/peer_support_main.PNG)](https://www.youtube.com/watch?v=SqZhiC8jHhU&t=10s, "<insert demo name here>")
-
-
+The test script performs a JavaScript syntax check for `script.js`.
 
 ## License
-<!-- MAKE SURE an MIT license is included in your Repository. If another license is needed, verify with management. This is for legal reasons.--> 
 
-<!-- Keep the following statement -->
-All contents are licensed under the MIT license. Please see [license](LICENSE) for details.
-
+All contents are licensed under the MIT license. Please see [LICENSE](LICENSE) for details.
 
 ## Disclaimer
-<!-- Keep the following here -->  
- Everything included is for demo and Proof of Concept purposes only. Use of the site is solely at your own risk. This site may contain links to third party content, which we do not warrant, endorse, or assume liability for. These demos are for Cisco Webex usecases, but are not Official Cisco Webex Branded demos.
 
+Everything included is for demo and Proof of Concept purposes only. Use of the site is solely at your own risk. This site may contain links to third party content, which we do not warrant, endorse, or assume liability for. These demos are for Cisco Webex use cases, but are not official Cisco Webex branded demos.
 
 ## Questions
-Please contact the WXSD team at [wxsd@external.cisco.com](mailto:wxsd@external.cisco.com?subject=camera-control-webapp) for questions. Or, if you're a Cisco internal employee, reach out to us on the Webex App via our bot (globalexpert@webex.bot). In the "Engagement Type" field, choose the "API/SDK Proof of Concept Integration Development" option to make sure you reach our team. 
+
+Please contact the WXSD team at [wxsd@external.cisco.com](mailto:wxsd@external.cisco.com?subject=camera-control-webapp) for questions.
