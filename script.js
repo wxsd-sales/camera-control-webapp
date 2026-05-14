@@ -9,6 +9,13 @@ const CONFIG = {
   hidRelayUsage: 0x01,
   hidFilters: [
     { vendorId: 0x05a6, productId: 0x0b05, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b0c, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b0e, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b10, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b15, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b17, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0b23, usagePage: 0xff01, usage: 0x01 },
+    { vendorId: 0x05a6, productId: 0x0B1B, usagePage: 0xff01, usage: 0x01 },
   ],
   hidOutputReportId: 0x02,
   hidReportByteLength: 63,
